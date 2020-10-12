@@ -95,6 +95,11 @@ public class Script_Mono : MonoBehaviour
     private Tymon_Player _tymon_player;
 
     /// <summary>
+    /// If there is a player 2 this is the class
+    /// </summary>
+    private Tymon_Player _tymon_player_2;
+
+    /// <summary>
     /// Reference to the enemy class
     /// </summary>
     private Tymon_Enemy _tymon_enemy;
@@ -113,6 +118,7 @@ public class Script_Mono : MonoBehaviour
         // Update the classes via the Update Methode (Not the monobehaivor Update()!)
         _tymon_pongball?.Update();
         _tymon_player?.Update();
+        _tymon_player_2?.Update();
         _tymon_enemy?.Update();
 
         //Updates the powerups
@@ -155,7 +161,7 @@ public class Script_Mono : MonoBehaviour
         Transform[] arr = { _player, _enemy };
         // Set the class references/ create the classes
         _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr);
-        _tymon_player = new Tymon_Player(_player, 10f, 8f);
+        _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
         _tymon_enemy = new Tymon_Enemy(_enemy, _pongball, -7f, 9f);
     }
 
@@ -168,7 +174,7 @@ public class Script_Mono : MonoBehaviour
         Transform[] arr = { _player, _enemy };
         // Set the class references/ create the classes
         _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr);
-        _tymon_player = new Tymon_Player(_player, 10f, 8f);
-        _tymon_enemy = new Tymon_Player_1(_enemy, _pongball, -7f, 10f);
+        _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
+        _tymon_player_2 = new Tymon_Player(_enemy, 10f, -7f, true);
     }
 }

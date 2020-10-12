@@ -30,6 +30,10 @@ public class Tymon_Pongball
     /// Reference to the player and enemy transform (I call them bars)
     /// </summary>
     private Transform[] _bars = null;
+    /// <summary>
+    /// Bool to keep track what side scored a point
+    /// </summary>
+    private bool rightScoredPoint = false;
 
     /// <summary>
     /// Set class values
@@ -75,6 +79,7 @@ public class Tymon_Pongball
             _dirX = 1;
             _movementSpeedScaler = 1;
             _movementSpeed = 5f;
+            rightScoredPoint = true;
             Script_Mono.UpdateScore(new Vector2(0, 1));
         }
         else if(pos.x == 1)
@@ -85,6 +90,7 @@ public class Tymon_Pongball
             _dirX = -1;
             _movementSpeedScaler = 1;
             _movementSpeed = 5f;
+            rightScoredPoint = false;
             Script_Mono.UpdateScore(new Vector2(1, 0));
         }
         if(pos.y == 0) _dirY = 1; else if(pos.y == 1) _dirY = -1;
