@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The class of the enemy, the bar (or gameobject) that is on the left side
 /// </summary>
+[System.Obsolete("Use PaddleControllerAI")]
 public class Tymon_Enemy
 {
     /// <summary>

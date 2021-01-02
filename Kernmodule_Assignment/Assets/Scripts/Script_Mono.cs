@@ -7,7 +7,7 @@ using System.Xml.Schema;
 using TMPro;
 using UnityEngine;
 
-public class Script_Mono : MonoBehaviour
+public class Script_Mono : MonoBehaviour, IScoreManager
 {
     //Gedeelte van mikey
     [Header("Power Up Components")]
@@ -103,17 +103,17 @@ public class Script_Mono : MonoBehaviour
     /// <summary>
     /// Reference to the player class
     /// </summary>
-    private Tymon_Player _tymon_player;
+    private Paddle _playerPaddle;
 
     /// <summary>
     /// If there is a player 2 this is the class
     /// </summary>
-    private Tymon_Player _tymon_player_2;
+    private Paddle _playerPaddle_1;
 
     /// <summary>
     /// Reference to the enemy class
     /// </summary>
-    private Tymon_Enemy _tymon_enemy;
+    private Paddle _enemyPaddle;
 
     public void Start()
     {
@@ -128,9 +128,9 @@ public class Script_Mono : MonoBehaviour
     {
         // Update the classes via the Update Methode (Not the monobehaivor Update()!)
         _tymon_pongball?.Update();
-        _tymon_player?.Update();
-        _tymon_player_2?.Update();
-        _tymon_enemy?.Update();
+        _playerPaddle?.Update();
+        _playerPaddle_1?.Update();
+        _enemyPaddle?.Update();
 
         //Updates the powerups
         _powerUps.UpdateAll();
@@ -145,27 +145,7 @@ public class Script_Mono : MonoBehaviour
         float t = Mathf.PingPong(Time.time, _duration) / _duration;
         Camera.main.backgroundColor = Color.Lerp(_color1, _color2, t);
     }
-
-    /// <summary>
-    /// Updates the score and the ui for the score
-    /// </summary>
-    /// <param name="scoreToAdd"></param>
-    public static void UpdateScore(Vector2 scoreToAdd)
-    {
-        // Add score
-        INSTANCE._score += scoreToAdd;
-        // Update ui
-        INSTANCE._uiScore.text = INSTANCE._score.x.ToString() + " | " + INSTANCE._score.y.ToString();
-        // Play particle
-        if (scoreToAdd.x > 0)
-        {
-            INSTANCE._scoredRightParticle.Play();
-        }
-        else
-        {
-            INSTANCE._scoredLeftParticle.Play();
-        }
-    }
+       
 
     /// <summary>
     /// Triggerd when the player presses the singleplayer button, sets the game to singleplayer
@@ -178,9 +158,11 @@ public class Script_Mono : MonoBehaviour
         // Create a transform array for the ball to check for collisions
         Transform[] arr = { _player, _enemy };
         // Set the class references/ create the classes
-        _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr);
-        _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
-        _tymon_enemy = new Tymon_Enemy(_enemy, _pongball, -7f, 9f);
+        _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr, this);
+        // obselete _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
+        // obselete _tymon_enemy = new Tymon_Enemy(_enemy, _pongball, -7f, 9f);
+        _playerPaddle = new Paddle(10f, 8f, _player, new PaddleControllerPlayer(KeyCode.W, KeyCode.S));
+        _enemyPaddle = new Paddle(9f, -7f, _enemy, new PaddleControllerAI(_enemy, _pongball));
     }
 
     /// <summary>
@@ -194,8 +176,31 @@ public class Script_Mono : MonoBehaviour
         // Create a transform array for the ball to check for collisions
         Transform[] arr = { _player, _enemy };
         // Set the class references/ create the classes
-        _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr);
-        _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
-        _tymon_player_2 = new Tymon_Player(_enemy, 10f, -7f, true);
+        _tymon_pongball = new Tymon_Pongball(_pongball, _ballSpeed, arr, this);
+        // obselete _tymon_player = new Tymon_Player(_player, 10f, 8f, false);
+        // obselete _tymon_player_2 = new Tymon_Player(_enemy, 10f, -7f, true);
+        _playerPaddle = new Paddle(10f, 8f, _player, new PaddleControllerPlayer(KeyCode.UpArrow, KeyCode.DownArrow));
+        _enemyPaddle = new Paddle(10f, -7f, _enemy, new PaddleControllerPlayer(KeyCode.W, KeyCode.S));
+    }
+
+    /// <summary>
+    /// IScoreManager Interface implementation
+    /// </summary>
+    /// <param name="scoreToAdd">Vector 2 score meaning 1, 0 is left won and 0, 1 is right won</param>
+    public void UpdateScore(Vector2 scoreToAdd)
+    {
+        // Add score
+        _score += scoreToAdd;
+        // Update ui
+        _uiScore.text = _score.x.ToString() + " | " + _score.y.ToString();
+        // Play particle
+        if(scoreToAdd.x > 0)
+        {
+            _scoredRightParticle.Play();
+        }
+        else
+        {
+            _scoredLeftParticle.Play();
+        }
     }
 }

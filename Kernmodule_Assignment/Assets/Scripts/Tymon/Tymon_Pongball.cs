@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Tymon_Pongball
 {
@@ -36,17 +37,23 @@ public class Tymon_Pongball
     private bool rightScoredPoint = false;
 
     /// <summary>
+    /// Dependency injection https://www.youtube.com/watch?v=fGshe3ILKnA
+    /// </summary>
+    public IScoreManager _scoreManager;
+
+    /// <summary>
     /// Set class values
     /// </summary>
     /// <param name="pongball">Reference to the pongball transform</param>
     /// <param name="movementSpeed">The movement speed of the ball</param>
     /// <param name="bars">Reference to the enemy and player transforms</param>
-    public Tymon_Pongball(Transform pongball, float movementSpeed, Transform[] bars)
+    public Tymon_Pongball(Transform pongball, float movementSpeed, Transform[] bars, IScoreManager scoreManager = null)
     {
-        this._pongball = pongball;
-        this._movementSpeed = movementSpeed;
-        this._bars = bars;
+        _pongball = pongball;
+        _movementSpeed = movementSpeed;
+        _bars = bars;
         INSTANCE = this;
+        _scoreManager = scoreManager;
     }
 
     /// <summary>
@@ -80,7 +87,7 @@ public class Tymon_Pongball
             _movementSpeedScaler = 1;
             _movementSpeed = 5f;
             rightScoredPoint = true;
-            Script_Mono.UpdateScore(new Vector2(0, 1));
+            _scoreManager?.UpdateScore(new Vector2(0, 1));
         }
         else if(pos.x == 1)
         {
@@ -91,7 +98,7 @@ public class Tymon_Pongball
             _movementSpeedScaler = 1;
             _movementSpeed = 5f;
             rightScoredPoint = false;
-            Script_Mono.UpdateScore(new Vector2(1, 0));
+            _scoreManager?.UpdateScore(new Vector2(1, 0));
         }
         if(pos.y == 0) _dirY = 1; else if(pos.y == 1) _dirY = -1;
         // Set ponball position relative to camea viewport

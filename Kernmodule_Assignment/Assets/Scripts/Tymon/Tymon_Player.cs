@@ -5,6 +5,7 @@ using UnityEngine;
 /// <summary>
 /// The class that contains the player values
 /// </summary>
+[System.Obsolete("Obselete class, paddle class is replacement")]
 public class Tymon_Player
 {
     /// <summary>
